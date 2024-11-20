@@ -23,6 +23,10 @@ all: $(NAME)
 $(NAME): $(OBj)
 	gcc -o $(NAME) $(SRC)
 
+it: fclean
+	rm -f bsq_it
+	gcc -g -Ofast -o bsq_it src/utils/my_getnbr.c src/main_it.c
+
 run: all
 	./$(NAME) | cat -e
 
