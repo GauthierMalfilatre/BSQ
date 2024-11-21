@@ -10,6 +10,29 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
+static char *create_map(char *size_c, char *pattern)
+{
+    int s = my_strlen(size_c) + 1;
+    int size = my_getnbr(size_c);
+    char *map = malloc((size + 1) * size + 1 + s);
+    int pattern_len = my_strlen(pattern);
+    int n_len = 0;
+    int i = 0;
+
+    my_strcpy(map, size_c);
+    my_strcat(map, "\n");
+    for (; i < (size + 1) * size; i++) {
+        if ((i + 1) % (size + 1))
+            map[i + s] = pattern[(i - n_len) % (pattern_len)];
+        else {
+            map[i + s] = '\n';
+            ++n_len;
+        }
+    }
+    map[i + s] = '\0';
+    return map;
+}
+
 static int get_size(char *path)
 {
     struct stat kronk_struct;
@@ -65,7 +88,7 @@ static int fill_x(char *map, int *ka)
     }
 }
 
-static int bsq(char *map, int size)
+int bsq(char *map, int size)
 {
     int st = 1;
     int ka[7] = {};
@@ -91,19 +114,23 @@ static int bsq(char *map, int size)
 int main(int argc, char *const *argv)
 {
     char *kronk_buffer;
-    int fd = open(argv[1], O_RDONLY);
-    int size = get_size(argv[1]);
+    int fd;
+    int size;
     int exitcode = 0;
 
-    if (argc != 2 || fd == -1 || !size) {
-        return 84 + 0 * write(2, "You must handle a file fckin retard\n", 37);
+    if (argc == 3) {
+        kronk_buffer = create_map(argv[1], argv[2]);
+        size = my_strlen(kronk_buffer);
     }
-    kronk_buffer = malloc(size);
-    if (read(fd, kronk_buffer, size) == -1) {
-        return 84 + 0 * write(2, "Error while loading file\n", 26);
-    }
+    if (argc == 2) {
+        fd = open(argv[1], O_RDONLY);
+        size = get_size(argv[1]);
+        kronk_buffer = malloc(size);
+        if (read(fd, kronk_buffer, size) == -1 || fd == -1)
+            return 84 + 0 * write(2, "Error while loading file\n", 26);
+    } else if (argc != 2 && argc != 3)
+        return 84;
     exitcode = bsq(kronk_buffer, size);
     free(kronk_buffer);
-    close(fd);
-    return exitcode;
+    return close(fd) * 0 + exitcode;
 }

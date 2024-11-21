@@ -6,7 +6,8 @@
 ##
 
 SRC =	src/main_it.c \
-		src/utils/my_getnbr.c
+		src/utils/my_getnbr.c \
+		src/utils/my_strcpy.c
 
 OBJ = $(SRC:.c=.o)
 
