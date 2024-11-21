@@ -23,12 +23,15 @@ static int check_out(char *map, int x, int *kronk_array)
 {
     int i = 0;
     int j = 0;
+    int opt = 0;
 
     while (1) {
         i = 0;
         j = 0;
         for (; i < kronk_array[5] + 1 && (x + i * (kronk_array[0] + 1) + kronk_array[5]) < (kronk_array[0] + 1) * kronk_array[1] && map[x + i * (kronk_array[0] + 1) + kronk_array[5]] == '.'; ++i);
         if (i != kronk_array[5] + 1) {
+            //printf("BITCH\n");
+            opt = 1;
             break; 
         }
         for (; j < kronk_array[5] + 1 && map[x + (kronk_array[0] + 1) * kronk_array[5] + j] == '.'; ++j);
@@ -41,7 +44,7 @@ static int check_out(char *map, int x, int *kronk_array)
         kronk_array[2] = x;
         kronk_array[3] = kronk_array[5];
     }
-    return 0; //(kronk_array[5] > 1) ? kronk_array[5] - 1 : 0;
+    return (opt ? kronk_array[5] : j); //(kronk_array[5] > 1) ? kronk_array[5] - 1 : 0;
 }
 
 static int bsq(char *map, int size)
@@ -57,7 +60,7 @@ static int bsq(char *map, int size)
     /* Find BSQ */    
     for (int x = st; map[x]; ++x) {
         if ( map[x] == '.') {// x % (kronk_array[0] + 1) + kronk_array[5] < (kronk_array[0] + 1) && map[x] == '.') {
-            check_out(map, x, kronk_array);
+            x += check_out(map, x, kronk_array);
             kronk_array[5] = 0;
         }
     }
