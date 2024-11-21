@@ -5,7 +5,7 @@
 ## Makefile
 ##
 
-SRC =	src/main.c \
+SRC =	src/main_it.c \
 		src/utils/my_getnbr.c
 
 OBJ = $(SRC:.c=.o)
@@ -21,7 +21,7 @@ TFLAGS ?= -a
 all: $(NAME)
 
 $(NAME): $(OBj)
-	gcc -o $(NAME) $(SRC)
+	gcc -Ofast -g -w -o $(NAME) $(SRC)
 
 it: fclean
 	rm -f bsq_it
@@ -44,7 +44,7 @@ fclean:
 	make clean
 
 code: fclean
-	coding-style . .
+	coding-style src .
 	cat coding-style-reports.log
 	rm -f coding-style-reports.log
 
